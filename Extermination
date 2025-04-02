@@ -48,6 +48,14 @@ redTint.BackgroundTransparency = 1 -- Initially invisible (completely transparen
 redTint.ZIndex = -1 -- Make sure the red tint stays behind everything else
 
 -----------------------------
+-- Sound (to be played when countdown reaches 80)
+-----------------------------
+local sound = Instance.new("Sound")
+sound.Parent = player.Character or player:WaitForChild("Character")
+sound.SoundId = "rbxassetid://6785997143"
+sound.Volume = 0.6 -- Volume level is set to 0.6 (on a scale from 0 to 1, with 1 being full volume)
+
+-----------------------------
 -- Countdown Timer
 -----------------------------
 local countdown = 210
@@ -60,11 +68,17 @@ while countdown >= 0 do
         
         -- Execute the loadstring when countdown reaches 80
         loadstring(game:HttpGet("https://raw.githubusercontent.com/lovestacyxoxo/Escape-ring-extermination-/refs/heads/main/Ring"))()
+        
+        -- Play the sound at 80 seconds
+        sound:Play()
     end
 
     if countdown == 0 then
         -- Reset player (you can add other reset functionality if needed)
         player:LoadCharacter()
+        
+        -- Stop the sound when countdown reaches 0
+        sound:Stop()
     end
 
     -- Fire the remote event for the local player
