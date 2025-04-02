@@ -52,8 +52,9 @@ redTint.ZIndex = -1 -- Make sure the red tint stays behind everything else
 -----------------------------
 local sound = Instance.new("Sound")
 sound.Parent = player.Character or player:WaitForChild("Character")
-sound.SoundId = "rbxassetid://6785997143"
-sound.Volume = 0.6 -- Volume level is set to 0.6 (on a scale from 0 to 1, with 1 being full volume)
+sound.SoundId = "rbxassetid://7017400992"
+sound.Volume = 0.7 -- Volume level is set to 0.6 (on a scale from 0 to 1, with 1 being full volume)
+sound.Looped = true -- Make the sound loop
 
 -----------------------------
 -- Countdown Timer
