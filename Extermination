@@ -52,7 +52,7 @@ redTint.ZIndex = -1 -- Ensure the red tint stays behind other elements
 -----------------------------
 local sound = Instance.new("Sound")
 sound.Parent = player:WaitForChild("PlayerGui")  -- Parent to PlayerGui for persistence
-sound.SoundId = "rbxassetid://5660608255"
+sound.SoundId = "rbxassetid://6785997143"
 sound.Volume = 0.7
 sound.Looped = true
 
